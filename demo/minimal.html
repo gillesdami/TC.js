@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TC.js example</title>
+    <meta charset="utf-8">
+    <style>
+        * {
+            margin:0;
+            padding:0
+        }
+        body {
+            overflow:hidden;
+        }
+    </style>
+</head>
+<body>
+<script src="../libs/three.js"></script>
+<script src="../libs/cannon.js"></script>
+<script src="../BodyObject.js"></script>
+<script>
+    var world, mass, bodyObject, shape, timeStep=1/60,
+            camera, scene, renderer, geometry, material, mesh;
+    init();
+    animate();
+    function init() {
+        world = new CANNON.World();
+        world.gravity.set(0,0,0);
+        world.broadphase = new CANNON.NaiveBroadphase();
+        world.solver.iterations = 10;
+        shape = new CANNON.Box(new THREE.Vector3(1,1,1));//! look here, Vec3/Vector3 and Quaternion/Quaternion are equivalent !
+        mass = 1;
+        bodyObject = new TC.BodyObject3D({//! look here, Body => BodyObject !
+            mass: 1
+        });
+        bodyObject.addShape(shape);
+        bodyObject.angularVelocity.set(0,10,0);
+        bodyObject.angularDamping = 0.5;
+        world.addBody(bodyObject);
+        
+        scene = new THREE.Scene();
+        camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 100 );
+        camera.position.z = 5;
+        scene.add( camera );
+        geometry = new THREE.BoxGeometry( 2, 2, 2 );
+        material = new THREE.MeshBasicMaterial( { color: 0xff0000, wireframe: true } );
+        mesh = new THREE.Mesh( geometry, material );
+        bodyObject.add( mesh );//! look here, add the mesh to a bodyObject to automatically follow the body !
+        scene.add( bodyObject );
+        renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild( renderer.domElement );
+    }
+    function animate() {
+        requestAnimationFrame( animate );
+        world.step(timeStep);//! look here, no more three pos update needed !
+        render();
+    }
+    function render() {
+        renderer.render( scene, camera );
+    }
+</script>
+</body>
+</html>
