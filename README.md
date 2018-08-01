@@ -1,4 +1,7 @@
 # TC: ThreeCannon
+
+/!\ project discontinued /!\
+
 ## The 3 great improvements
  - TC.BodyObject3D is both a body and an object3d, no need to update the mesh position/quaternion at each frame !
  - THREE.Vector3/CANNON.Vec3 and THREE.Quaternion/CANNON.Quaternion are now interchangeable
